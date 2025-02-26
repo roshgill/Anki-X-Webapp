@@ -105,7 +105,7 @@ export default function Home() {
   const handleGenerateImportFile = async () => {
     try {
       const response = await axios.post(
-        "https://roshanankix.pythonanywhere.com/process_pdf",
+        "https://roshanankix.pythonanywhere.com/import_file",
         { flashcardPages },
         {
           headers: {
