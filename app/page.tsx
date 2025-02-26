@@ -129,9 +129,9 @@ export default function Home() {
             <FileUp className="h-16 w-16 text-primary" />
           </div>
           <h1 className="text-3xl font-bold tracking-tight">Anki-X v0.0.2</h1>
-          <p className="text-muted-foreground">
-          Upload a PDF, edit your flashcards, and generate an Anki import file! Flashcards are created based on SuperMemo's principles for effective learning. Each page is processed using the GPT-4o model (awaiting API approval for the o1 and o3-mini models). I’d love your feedback—feel free to reach out at RoshanAnkiX@gmail.com or connect with me on Reddit to share your thoughts and suggestions!
-          </p>
+            <p className="text-muted-foreground">
+            Upload a PDF (Up to 100 pages), edit your flashcards, and generate an Anki import file! Flashcards are created based on <a href="https://www.supermemo.com/en/blog/twenty-rules-of-formulating-knowledge" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">SuperMemo's principles</a> for flashcard creation. Each page is processed using the GPT-4o model for now (still waiting on API approval for the o1 and o3-mini models). Please tell me how I can make this service better so that you'll actually want to use it! Email: RoshanAnkiX@gmail.com | Reddit: __01000010
+            </p>
         </div>
 
         <div className="space-y-6">
