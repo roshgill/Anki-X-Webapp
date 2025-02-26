@@ -73,7 +73,7 @@ export default function Home() {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:5000/process_pdf",
+        "https://roshanankix.pythonanywhere.com/process_pdf",
         formData,
         {
           headers: {
@@ -105,7 +105,7 @@ export default function Home() {
   const handleGenerateImportFile = async () => {
     try {
       const response = await axios.post(
-        "http://127.0.0.1:5000/import_file",
+        "https://roshanankix.pythonanywhere.com/process_pdf",
         { flashcardPages },
         {
           headers: {
