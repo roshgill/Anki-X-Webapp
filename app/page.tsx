@@ -73,7 +73,7 @@ export default function Home() {
 
     try {
       const response = await axios.post(
-        "https://roshanankix.pythonanywhere.com/process_pdf",
+        "http://127.0.0.1:5000/process_pdf",
         formData,
         {
           headers: {
@@ -105,7 +105,7 @@ export default function Home() {
   const handleGenerateImportFile = async () => {
     try {
       const response = await axios.post(
-        "https://roshanankix.pythonanywhere.com/import_file",
+        "http://127.0.0.1:5000/import_file",
         { flashcardPages },
         {
           headers: {
@@ -130,7 +130,7 @@ export default function Home() {
           </div>
           <h1 className="text-3xl font-bold tracking-tight">Anki-X v0.0.2</h1>
             <p className="text-muted-foreground">
-            Upload a PDF (Up to 100 pages), edit your flashcards, and generate an Anki import file! Flashcards are created based on <a href="https://www.supermemo.com/en/blog/twenty-rules-of-formulating-knowledge" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">SuperMemo's principles</a> for flashcard creation. Each page is processed using the GPT-4o model for now (still waiting on API approval for the o1 and o3-mini models). Please tell me how I can make this service better so that you'll actually want to use it! Email: RoshanAnkiX@gmail.com | Reddit: __01000010
+            Upload a PDF (Up to 100 pages), edit your flashcards, and generate an Anki import file! Flashcards are created based on <a href="https://www.supermemo.com/en/blog/twenty-rules-of-formulating-knowledge" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">SuperMemo's principles</a> for flashcard creation. Each page is processed using the o3-mini model (arguably the top reasoning model as of today). Please tell me how I can make this service better so that you'll actually want to use it! Email: RoshanAnkiX@gmail.com | Reddit: __01000010
             </p>
         </div>
 
