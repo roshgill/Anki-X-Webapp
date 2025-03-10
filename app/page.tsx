@@ -160,7 +160,7 @@ export default function Home() {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:5000/process_images",
+        "https://roshanankix.pythonanywhere.com/process_images",
         formData,
         {
           headers: {
