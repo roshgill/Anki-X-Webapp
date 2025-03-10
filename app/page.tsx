@@ -30,7 +30,7 @@ export default function Home() {
   const [selectedPage, setSelectedPage] = useState(0);
   const [pageGroup, setPageGroup] = useState(0);
   const [cardType, setCardType] = useState<"basic" | "cloze">("basic");
-  const [activeTab, setActiveTab] = useState<"flashcards" | "vision">("flashcards");
+  const [activeTab, setActiveTab] = useState<"flashcards" | "vision" | "committee">("flashcards");
   const [images, setImages] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
 
@@ -214,14 +214,24 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted flex items-start justify-center p-4">
+      <div className="absolute top-4 left-4 w-64 space-y-4 p-4 bg-white shadow-lg rounded-lg">
+        <h2 className="text-xl font-bold">Anki-X Ecosystem</h2>
+        <p>
+          Try out Anki-X GPT for free. It has assisted over 25,000+ conversations and received 500+ ratings. Check it out:
+          <a href="https://chatgpt.com/g/g-mPyoGmkTR-anki-x" className="text-primary font-bold hover:underline" target="_blank" rel="noopener noreferrer">Anki-X</a>.
+        </p>
+        <p>
+          (Announcement) Working on a new tool for AI conversations + simultaneous flashcard creation. Essentially, the goal is to have learning conversations with AI models (like chatgpt or claude), and then have a deck of flashcards ready to be studied from your acquired knowledge and newfound understanding. This way, you don't have to go back and create cards. Stay tuned for updates!
+        </p>
+      </div>
       <div className="w-full max-w-md space-y-8">
         <div className="text-left space-y-4">
           <div className="flex justify-center">
             <FileUp className="h-16 w-16 text-primary" />
           </div>
-          <h1 className="text-3xl font-bold tracking-tight">Anki-X v0.0.3</h1>
+            <h1 className="text-3xl font-bold tracking-tight text-center">Anki-X v0.0.4</h1>
           <p className="text-muted-foreground">
-            Update: You can now generate basic + cloze cards! Upload a PDF (Up to 100 pages) or JPG images, edit your flashcards, and generate an Anki import file! Flashcards are created based on <a href="https://www.supermemo.com/en/blog/twenty-rules-of-formulating-knowledge" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">SuperMemo's principles</a> for flashcard creation. Each page is processed using the o3-mini model (arguably the top reasoning model as of today). Tell me how I can make this service better so that you'll actually want to use it! Email: RoshanAnkiX@gmail.com | Reddit: __01000010
+            Update: Generate flashcards from images (like handwritten notes)! Upload a PDF (Up to 100 pages) or JPG images, edit your flashcards, and generate an Anki import file! Flashcards are created based on <a href="https://www.supermemo.com/en/blog/twenty-rules-of-formulating-knowledge" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">SuperMemo's principles</a> for flashcard creation. Each page is processed using the o1 model (arguably the top reasoning model as of today and works with images). Tell me how I can make this service better so that you'll actually want to use it (pretty please). Email: RoshanAnkiX@gmail.com | Reddit: __01000010
           </p>
         </div>
 
@@ -232,6 +242,9 @@ export default function Home() {
             </Button>
             <Button onClick={() => setActiveTab("vision")} className={activeTab === "vision" ? "bg-primary text-white" : ""}>
               Visual AI Cards
+            </Button>
+            <Button onClick={() => setActiveTab("committee")} className={activeTab === "committee" ? "bg-primary text-white" : ""}>
+              AI Model Group
             </Button>
           </div>
 
@@ -506,6 +519,20 @@ export default function Home() {
                   </div>
                 </div>
               )}
+            </div>
+          )}
+
+          {activeTab === "committee" && (
+            <div className="flex flex-col items-center justify-center w-full">
+              <div className="border p-4 rounded-lg">
+                <h2 className="text-lg font-bold">Next-Gen Flashcard Creation</h2>
+                <p>
+                  I'm experimenting with flashcard creation + refinement using a group of the smartest AI models (o1, o3, 3.5 Sonnet, etc.) working together to generate the best flashcards.
+                </p>
+                <p className="mt-2">
+                  Stay tuned for updates!
+                </p>
+              </div>
             </div>
           )}
         </div>
