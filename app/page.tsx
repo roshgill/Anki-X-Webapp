@@ -1,10 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Upload, Download, FileUp, ChevronLeft, ChevronRight, X } from "lucide-react";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { FeedbackForm } from "@/components/FeedbackForm";
+
+import { getFlashcardsCount, getAndIncrementCardsCount } from "@/app/actions/database";
+import { get } from "node:http";
+import { set } from "date-fns";
 
 // Interfaces define the structure of objects. Variable names and their types
 interface Flashcard {
@@ -16,6 +21,10 @@ interface Flashcard {
 interface FlashcardPage {
   flashcards: Flashcard[];
 }
+
+const countFlashcards = (pages: FlashcardPage[]): number => {
+  return pages.reduce((total, page) => total + page.flashcards.length, 0);
+};
 
 export default function Home() {
   // Here the type for file is set to either File or null. Initially, it is null.
@@ -34,8 +43,17 @@ export default function Home() {
   const [images, setImages] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
 
+  const [flashcardsCount, setFlashcardsCount] = useState<number>(0);
+
   const pagesPerGroup = 3;
   const totalGroups = Math.ceil(flashcardPages.length / pagesPerGroup);
+
+  useEffect(() => {
+    // Get initial count without incrementing
+    getFlashcardsCount().then(count => {
+      if (count) setFlashcardsCount(count);
+    });
+  }, []);
 
   const handlePreviousGroup = () => {
     if (pageGroup > 0) {
@@ -113,6 +131,9 @@ export default function Home() {
         }
       );
       setFlashcardPages(response.data);
+      const cardsCount = countFlashcards(response.data);
+      const updatedCount = await getAndIncrementCardsCount(cardsCount);
+      if (updatedCount !== null) setFlashcardsCount(updatedCount + cardsCount);
     } catch (err) {
       console.error("Upload failed:", err);
       setError("An error occurred while processing your file. Please try again.");
@@ -169,6 +190,10 @@ export default function Home() {
         }
       );
       setFlashcardPages(response.data);
+      const cardsCount = countFlashcards(response.data);
+      console.log("Cards Count:", cardsCount);
+      const updatedCount = await getAndIncrementCardsCount(cardsCount);
+      if (updatedCount !== null) setFlashcardsCount(updatedCount + cardsCount);
     } catch (err) {
       console.error("Upload failed:", err);
       setError("An error occurred while processing your images. Please try again.");
@@ -214,9 +239,14 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted flex items-start justify-center p-4">
-      {/* Stats Counter */}
-      <div className="absolute top-4 right-4 bg-gray-100/80 px-3 py-1 rounded-md">
-        <p className="text-sm text-gray-600">Generated 1,090,909M+ flashcards so far</p>
+      <div className="absolute top-4 right-4 space-y-4">
+        <div className="bg-gray-100/80 px-3 py-1 rounded-md">
+          <p className="text-sm text-gray-600">{flashcardsCount && `Cards Created: ${flashcardsCount}`}</p>
+        </div>
+        <div className="bg-white p-4 rounded-lg shadow-sm w-64">
+          <h2 className="text-xl font-semibold mb-4">Give Feedback</h2>
+          <FeedbackForm />
+        </div>
       </div>
 
       {/* Enhanced Announcement Banner */}
@@ -247,8 +277,7 @@ export default function Home() {
           </div>
             <h1 className="text-3xl font-bold tracking-tight text-center">Anki-X v0.0.5</h1>
           <p className="text-muted-foreground">
-            Update: Anki-X Conversations is now out! Upload a PDF (Up to 100 pages) or JPG images, edit your flashcards, and generate an Anki import file! Flashcards are created based on <a href="https://www.supermemo.com/en/blog/twenty-rules-of-formulating-knowledge" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">SuperMemo's principles</a> for flashcard creation. Each page is processed using the o1 model (arguably the top reasoning model as of today and works with images). Tell me how I can make this service better so that you'll actually want to use it (pretty please). Email: RoshanAnkiX@gmail.com | Reddit: __01000010 | X: Roshgill_ (Lets be friends)
-
+            Update: Anki-X Conversations is now out! Upload a PDF (Up to 100 pages) or JPG images, edit your flashcards, and generate an Anki import file! Flashcards are created based on <a href="https://www.supermemo.com/en/blog/twenty-rules-of-formulating-knowledge" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">SuperMemo's principles</a> for flashcard creation. Each page is processed using the o1 model (arguably the top reasoning model as of today and works with images). Email: RoshanAnkiX@gmail.com | Reddit: __01000010 | X: Roshgill_
           </p>
         </div>
 
