@@ -278,10 +278,10 @@ export default function Home() {
           </a>
         </div>
 
-        <h2 className="text-xl font-bold">Anki-X Ecosystem</h2>
+        <h2 className="text-xl font-bold">Anki-X GPT</h2>
         <p>
-          Try out Anki-X GPT for free. It has assisted over 25,000+ conversations and received 500+ ratings. Check it out:
-          <a href="https://chatgpt.com/g/g-mPyoGmkTR-anki-x" className="text-primary font-bold hover:underline" target="_blank" rel="noopener noreferrer">Anki-X</a>.
+          Try out Anki-X GPT for free. It has assisted over 25,000+ conversations and received 500+ ratings:
+          <a href="https://chatgpt.com/g/g-mPyoGmkTR-anki-x" className="text-secondary font-bold hover:underline" target="_blank" rel="noopener noreferrer">Anki-X</a>.
         </p>
       </div>
       <div className="w-full max-w-md space-y-8">
@@ -289,9 +289,9 @@ export default function Home() {
           <div className="flex justify-center">
             <FileUp className="h-16 w-16 text-primary" />
           </div>
-            <h1 className="text-3xl font-bold tracking-tight text-center">Anki-X v0.0.5</h1>
+            <h1 className="text-3xl font-bold tracking-tight text-center">Anki-X v0.0.6</h1>
           <p className="text-muted-foreground">
-            Update: Anki-X Conversations is now out! Upload a PDF (Up to 100 pages) or JPG images, edit your flashcards, and generate an Anki import file! Flashcards are created based on <a href="https://www.supermemo.com/en/blog/twenty-rules-of-formulating-knowledge" className="text-secondary hover:underline" target="_blank" rel="noopener noreferrer">SuperMemo's principles</a> for flashcard creation. Each page is processed using the o1 model (arguably the top reasoning model as of today and works with images). Email: RoshanAnkiX@gmail.com | Reddit: __01000010 | X: Roshgill_
+            Update: Optional instructions along with card generation! Upload a PDF (Up to 100 pages) or JPG images, edit your flashcards, and generate an Anki import file! Flashcards are created based on <a href="https://www.supermemo.com/en/blog/twenty-rules-of-formulating-knowledge" className="text-secondary hover:underline" target="_blank" rel="noopener noreferrer">SuperMemo's principles</a> for flashcard creation. Each page is processed using the gpt-4o model. Email: RoshanAnkiX@gmail.com | Reddit: __01000010 | X: Roshgill_
           </p>
         </div>
 
@@ -437,7 +437,7 @@ export default function Home() {
               {downloadUrl && (
                 <a
                   href={downloadUrl}
-                  className="mt-4 inline-flex items-center text-primary hover:underline"
+                  className="mt-4 inline-flex items-center text-secondary hover:underline"
                   download
                 >
                   <Download className="mr-2 h-4 w-4" />
@@ -636,7 +636,7 @@ export default function Home() {
               {downloadUrl && (
                 <a
                   href={downloadUrl}
-                  className="mt-4 inline-flex items-center text-primary hover:underline"
+                  className="mt-4 inline-flex items-center text-secondary hover:underline"
                   download
                 >
                   <Download className="mr-2 h-4 w-4" />
