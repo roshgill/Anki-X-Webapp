@@ -26,6 +26,38 @@ const countFlashcards = (pages: FlashcardPage[]): number => {
   return pages.reduce((total, page) => total + page.flashcards.length, 0);
 };
 
+const BASIC_SYSTEM_PROMPT = `Your job is to extract flashcards from the provided page material.
+
+### STRICT GUIDELINES:
+
+1. **Concise:** Every card must be as **short as possible** while conveying the key idea.
+
+2. **Focused:** Each card must test **only one fact or concept.**
+
+3. **No Meta Content:** Ignore slide credits, authors, or any irrelevant meta-information.
+
+### OUTPUT REQUIREMENTS:
+- **PURE JSON ONLY** (no markdown, no newlines, no extra spaces).
+- Must return a **valid JSON array of objects**.
+- Each object **must contain exactly two keys**: "front" and "back".
+- **Do not escape characters unnecessarily** (e.g., no \\'\\' for apostrophes).
+- **No extra formatting or explanations.**`;
+
+const CLOZE_SYSTEM_PROMPT = `Your job is to create **cloze-style flashcards** from the provided page material.
+
+### STRICT GUIDELINES:
+1. **Concise:** Every card must be as **short as possible** while conveying the key idea.
+
+2. **Focused:** Each card must test **only one fact or concept.**
+
+3. Generate **concise, natural-sounding statements** (avoid question formats).
+
+4. Each flashcard must hide a **single, short word or phrase** inside {{c1::...}}.
+
+### AVOID:
+1. **Overly Long Deletions**: The hidden text should typically be **a single word or short phrase**.
+2. **Questions**: Do not produce lines like "What is X?"; instead, use declarative statements.`;
+
 export default function Home() {
   // Here the type for file is set to either File or null. Initially, it is null.
   // setFile represents the hook that will be used to update the file state.
@@ -42,8 +74,10 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<"flashcards" | "vision" | "committee">("flashcards");
   const [images, setImages] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [userPrompt, setUserPrompt] = useState<string>("");
 
   const [flashcardsCount, setFlashcardsCount] = useState<number>(0);
+  const [activePromptTab, setActivePromptTab] = useState<"user" | "system">("user");
 
   const pagesPerGroup = 3;
   const totalGroups = Math.ceil(flashcardPages.length / pagesPerGroup);
@@ -114,6 +148,8 @@ export default function Home() {
     const formData = new FormData();
     formData.append("pdf", file);
     formData.append("cardType", cardType);
+    formData.append("systemPrompt", cardType === "basic" ? BASIC_SYSTEM_PROMPT : CLOZE_SYSTEM_PROMPT);
+    formData.append("userPrompt", userPrompt);
 
     // Log form data for debugging
     for (let [key, value] of formData.entries()) {
@@ -150,34 +186,12 @@ export default function Home() {
     setError(null);
 
     const formData = new FormData();
-    // const base64Images = await Promise.all(images.map(file => {
-    //   return new Promise<string>((resolve, reject) => {
-    //   const reader = new FileReader();
-    //   reader.onloadend = () => {
-    //     const result = reader.result as string;
-    //     const base64String = result.split(",")[1]; // Extract only the base64 part
-    //     resolve(base64String);
-    //   };
-    //   reader.onerror = reject;
-    //   reader.readAsDataURL(file);
-    //   });
-    // }));
-
     images.forEach((file) => {
-      formData.append("images", file); // Directly send the File object
+      formData.append("images", file);
     });
     formData.append("cardType", cardType);
-
-    // console.log("Base64 Image [0]:", base64Images[0]); // View first image
-    // console.log("Base64 Length:", base64Images[0]?.length || "Empty!");
-
-    // formData.append("images", JSON.stringify(base64Images));
-    // formData.append("cardType", cardType);
-
-    // Log form data for debugging
-    for (let [key, value] of formData.entries()) {
-      console.log(`${key}: ${value}`);
-    }
+    formData.append("systemPrompt", cardType === "basic" ? BASIC_SYSTEM_PROMPT : CLOZE_SYSTEM_PROMPT);
+    formData.append("userPrompt", userPrompt);
 
     try {
       const response = await axios.post(
@@ -277,20 +291,23 @@ export default function Home() {
           </div>
             <h1 className="text-3xl font-bold tracking-tight text-center">Anki-X v0.0.5</h1>
           <p className="text-muted-foreground">
-            Update: Anki-X Conversations is now out! Upload a PDF (Up to 100 pages) or JPG images, edit your flashcards, and generate an Anki import file! Flashcards are created based on <a href="https://www.supermemo.com/en/blog/twenty-rules-of-formulating-knowledge" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">SuperMemo's principles</a> for flashcard creation. Each page is processed using the o1 model (arguably the top reasoning model as of today and works with images). Email: RoshanAnkiX@gmail.com | Reddit: __01000010 | X: Roshgill_
+            Update: Anki-X Conversations is now out! Upload a PDF (Up to 100 pages) or JPG images, edit your flashcards, and generate an Anki import file! Flashcards are created based on <a href="https://www.supermemo.com/en/blog/twenty-rules-of-formulating-knowledge" className="text-secondary hover:underline" target="_blank" rel="noopener noreferrer">SuperMemo's principles</a> for flashcard creation. Each page is processed using the o1 model (arguably the top reasoning model as of today and works with images). Email: RoshanAnkiX@gmail.com | Reddit: __01000010 | X: Roshgill_
           </p>
         </div>
 
         <div className="space-y-6">
           <div className="flex justify-center space-x-4">
-            <Button onClick={() => setActiveTab("flashcards")} className={activeTab === "flashcards" ? "bg-primary text-white" : ""}>
+            <Button
+              onClick={() => setActiveTab("flashcards")}
+              variant={activeTab === "flashcards" ? "outline" : "default"}
+            >
               Flashcards
             </Button>
-            <Button onClick={() => setActiveTab("vision")} className={activeTab === "vision" ? "bg-primary text-white" : ""}>
+            <Button
+              onClick={() => setActiveTab("vision")}
+              variant={activeTab === "vision" ? "outline" : "default"}
+            >
               Visual AI Cards
-            </Button>
-            <Button onClick={() => setActiveTab("committee")} className={activeTab === "committee" ? "bg-primary text-white" : ""}>
-              AI Model Group
             </Button>
           </div>
 
@@ -337,6 +354,68 @@ export default function Home() {
                     <option value="basic">Basic</option>
                     <option value="cloze">Cloze</option>
                   </select>
+                  
+                  {/* Tabs for prompts */}
+                  <div className="flex border-b">
+                    <button
+                      onClick={() => setActivePromptTab("user")}
+                      className={`px-4 py-2 ${
+                        activePromptTab === "user"
+                          ? "border-b-2 border-primary font-semibold"
+                          : "text-gray-500"
+                      }`}
+                    >
+                      User Prompt
+                    </button>
+                    <button
+                      onClick={() => setActivePromptTab("system")}
+                      className={`px-4 py-2 ${
+                        activePromptTab === "system"
+                          ? "border-b-2 border-primary font-semibold"
+                          : "text-gray-500"
+                      }`}
+                    >
+                      System Prompt
+                    </button>
+                  </div>
+
+                  {/* Prompt content */}
+                  <div className="relative">
+                    {activePromptTab === "user" ? (
+                      <textarea
+                        value={userPrompt}
+                        onChange={(e) => setUserPrompt(e.target.value)}
+                        placeholder="Optional: Add specific instructions for flashcard generation..."
+                        className="w-full p-2 border rounded mb-2 min-h-[150px]"
+                      />
+                    ) : (
+                      <div className="space-y-2">
+                        <textarea
+                          value={cardType === "basic" ? BASIC_SYSTEM_PROMPT : CLOZE_SYSTEM_PROMPT}
+                          onChange={(e) => {
+                            if (cardType === "basic") {
+                              // Update BASIC_SYSTEM_PROMPT
+                            } else {
+                              // Update CLOZE_SYSTEM_PROMPT
+                            }
+                          }}
+                          className="w-full p-2 border rounded mb-2 min-h-[150px] font-mono text-sm"
+                        />
+                        <div className="bg-yellow-50 p-3 rounded-md text-sm">
+                          <p className="font-medium text-yellow-800">⚠️ System Prompt Guidelines</p>
+                          <p className="text-yellow-700 mt-1">
+                            This prompt controls how the AI generates flashcards. While you can modify it,
+                            please ensure you maintain the correct JSON output format:
+                            <code className="block bg-yellow-100 p-2 mt-1 rounded">
+                              front: question | back: answer
+                            </code>
+                            Incorrect formats will cause generation to fail.
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
                   <div className="flex space-x-2">
                     <Button
                       onClick={handleUpload}
@@ -377,7 +456,7 @@ export default function Home() {
                         <Button
                           key={pageIndex + pageGroup * pagesPerGroup}
                           onClick={() => setSelectedPage(pageIndex + pageGroup * pagesPerGroup)}
-                          className={selectedPage === pageIndex + pageGroup * pagesPerGroup ? "bg-primary text-white" : ""}
+                          variant={selectedPage === pageIndex + pageGroup * pagesPerGroup ? "default" : "outline"}
                         >
                           Page {pageIndex + 1 + pageGroup * pagesPerGroup}
                         </Button>
@@ -484,6 +563,58 @@ export default function Home() {
                     <option value="basic">Basic</option>
                     <option value="cloze">Cloze</option>
                   </select>
+                  
+                  {/* Tabs for prompts */}
+                  <div className="flex border-b">
+                    <button
+                      onClick={() => setActivePromptTab("user")}
+                      className={`px-4 py-2 ${
+                        activePromptTab === "user"
+                          ? "border-b-2 border-primary font-semibold"
+                          : "text-gray-500"
+                      }`}
+                    >
+                      User Prompt
+                    </button>
+                    <button
+                      onClick={() => setActivePromptTab("system")}
+                      className={`px-4 py-2 ${
+                        activePromptTab === "system"
+                          ? "border-b-2 border-primary font-semibold"
+                          : "text-gray-500"
+                      }`}
+                    >
+                      System Prompt
+                    </button>
+                  </div>
+
+                  {/* Prompt content */}
+                  <div className="relative">
+                    {activePromptTab === "user" ? (
+                      <textarea
+                        value={userPrompt}
+                        onChange={(e) => setUserPrompt(e.target.value)}
+                        placeholder="Optional: Add specific instructions for flashcard generation..."
+                        className="w-full p-2 border rounded mb-2 min-h-[150px]"
+                      />
+                    ) : (
+                      <div className="space-y-2">
+                        <textarea
+                          value={cardType === "basic" ? BASIC_SYSTEM_PROMPT : CLOZE_SYSTEM_PROMPT}
+                          readOnly
+                          className="w-full p-2 border rounded mb-2 min-h-[150px] font-mono text-sm"
+                        />
+                        <div className="bg-yellow-50 p-3 rounded-md text-sm">
+                          <p className="font-medium text-yellow-800">⚠️ System Prompt Guidelines</p>
+                          <p className="text-yellow-700 mt-1">
+                            This prompt controls how the AI analyzes images and generates flashcards. 
+                            The format must be maintained for proper card generation.
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
                   <div className="flex space-x-2">
                     <Button
                       onClick={handleImageUpload}
@@ -524,7 +655,7 @@ export default function Home() {
                         <Button
                           key={pageIndex + pageGroup * pagesPerGroup}
                           onClick={() => setSelectedPage(pageIndex + pageGroup * pagesPerGroup)}
-                          className={selectedPage === pageIndex + pageGroup * pagesPerGroup ? "bg-primary text-white" : ""}
+                          variant={selectedPage === pageIndex + pageGroup * pagesPerGroup ? "default" : "outline"}
                         >
                           Page {pageIndex + 1 + pageGroup * pagesPerGroup}
                         </Button>
@@ -565,20 +696,6 @@ export default function Home() {
                   </div>
                 </div>
               )}
-            </div>
-          )}
-
-          {activeTab === "committee" && (
-            <div className="flex flex-col items-center justify-center w-full">
-              <div className="border p-4 rounded-lg">
-                <h2 className="text-lg font-bold">Next-Gen Flashcard Creation</h2>
-                <p>
-                  I'm experimenting with flashcard creation + refinement using a group of the smartest AI models (o1, o3, 3.5 Sonnet, etc.) working together to generate the best flashcards.
-                </p>
-                <p className="mt-2">
-                  Stay tuned for updates!
-                </p>
-              </div>
             </div>
           )}
         </div>
