@@ -289,9 +289,9 @@ export default function Home() {
           <div className="flex justify-center">
             <FileUp className="h-16 w-16 text-primary" />
           </div>
-            <h1 className="text-3xl font-bold tracking-tight text-center">Anki-X v0.0.6</h1>
+            <h1 className="text-3xl font-bold tracking-tight text-center">Anki-X v0.0.7</h1>
           <p className="text-muted-foreground">
-            Update: Optional instructions along with card generation! Upload a PDF (Up to 100 pages) or JPG images, edit your flashcards, and generate an Anki import file! Flashcards are created based on <a href="https://www.supermemo.com/en/blog/twenty-rules-of-formulating-knowledge" className="text-secondary hover:underline" target="_blank" rel="noopener noreferrer">SuperMemo's principles</a> for flashcard creation. Each page is processed using the gpt-4o model. Email: RoshanAnkiX@gmail.com | Reddit: __01000010 | X: Roshgill_
+            Update: Optional instructions along with card generation! Upload a PDF (Up to 100 pages) or JPG images, edit your flashcards, and generate an Anki import file! Flashcards are created based on <a href="https://www.supermemo.com/en/blog/twenty-rules-of-formulating-knowledge" className="text-secondary hover:underline" target="_blank" rel="noopener noreferrer">SuperMemo's principles</a> for flashcard creation. Each page is processed using the gpt-4.1 model. Email: RoshanAnkiX@gmail.com | Reddit: __01000010 | X: Roshgill_
           </p>
         </div>
 
