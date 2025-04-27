@@ -291,7 +291,7 @@ export default function Home() {
           </div>
             <h1 className="text-3xl font-bold tracking-tight text-center">Anki-X v0.0.7</h1>
           <p className="text-muted-foreground">
-            Update: Optional instructions along with card generation! Upload a PDF (Up to 100 pages) or JPG images, edit your flashcards, and generate an Anki import file! Flashcards are created based on <a href="https://www.supermemo.com/en/blog/twenty-rules-of-formulating-knowledge" className="text-secondary hover:underline" target="_blank" rel="noopener noreferrer">SuperMemo's principles</a> for flashcard creation. Each page is processed using the gpt-4.1 model. Email: RoshanAnkiX@gmail.com | Reddit: __01000010 | X: Roshgill_
+            Update: Cards are now created by GPT-4.1 model! I heard your guys' concerns and have made the fixes. Keep me updated! Upload a PDF (Up to 100 pages) or JPG images, edit your flashcards, and generate an Anki import file! Flashcards are created based on <a href="https://www.supermemo.com/en/blog/twenty-rules-of-formulating-knowledge" className="text-secondary hover:underline" target="_blank" rel="noopener noreferrer">SuperMemo's principles</a> for flashcard creation. Each page is processed using the gpt-4.1 model. Email: RoshanAnkiX@gmail.com | Reddit: __01000010 | X: Roshgill_
           </p>
         </div>
 
